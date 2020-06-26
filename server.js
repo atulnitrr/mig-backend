@@ -1,7 +1,10 @@
 const express = require("express");
 const socketio = require("socket.io");
+const fetch = require("node-fetch");
+const cors = require("cors");
 
 const expressApp = express();
+expressApp.use(cors());
 
 expressApp.use(express.static(__dirname + "/public"));
 
@@ -17,3 +20,17 @@ io.on("connect", (socket) => {
     io.emit("msgToClients", msg);
   });
 });
+
+expressApp.get("/getcsdata/:pnr/:airlinecode", (req, res, data) => {
+  getData(req.params.pnr, req.params.airlinecode).then((data) =>
+    res.send(data)
+  );
+});
+
+async function getData(pnr, airlinecode) {
+  const response = await fetch(
+    `http://flights-pnr-service.ecs.mmt/flights-pnr-service/v1/mongoCreditShellAmount?airline=${airlinecode}&pnr=${pnr}`
+  );
+  const data = await response.json();
+  return data;
+}
