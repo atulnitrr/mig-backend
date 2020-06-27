@@ -1,0 +1,6 @@
+pnr,airlinecode,status,remark
+R6GUGK-I5,I5,SUCCESS,"{""status"":""SUCCESS"",""amount"":0,""currency"":null,""error"":null,""creditShellSource"":""GO_MMT"",""traceData"":null}"
+R6GUGK-I6,I6,FAILED,"{""status"":""FAILED"",""amount"":0,""currency"":null,""error"":{""ec"":""124005"",""em"":""no credit shel found"",""ed"":""no credit shel found""},""creditShellSource"":""GO_MMT"",""traceData"":null}"
+R6GUGK-I7,I7,FAILED,"{""status"":""FAILED"",""amount"":0,""currency"":null,""error"":{""ec"":""124005"",""em"":""no credit shel found"",""ed"":""no credit shel found""},""creditShellSource"":""GO_MMT"",""traceData"":null}"
+R6GUGK-I8,I8,FAILED,"{""status"":""FAILED"",""amount"":0,""currency"":null,""error"":{""ec"":""124005"",""em"":""no credit shel found"",""ed"":""no credit shel found""},""creditShellSource"":""GO_MMT"",""traceData"":null}"
+R6GUGK-I9,I9,FAILED,"{""status"":""FAILED"",""amount"":0,""currency"":null,""error"":{""ec"":""124005"",""em"":""no credit shel found"",""ed"":""no credit shel found""},""creditShellSource"":""GO_MMT"",""traceData"":null}"

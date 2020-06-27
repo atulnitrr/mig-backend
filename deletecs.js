@@ -1,5 +1,11 @@
 const xlsxFile = require("read-excel-file/node");
 const fetch = require("node-fetch");
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+let io = require("./socketinit").io();
+const DelResponse = require("./DelResponse");
+
+// console.log(io);
+
 const PROD_PATH =
   "http://flights-pnr-service.ecs.mmt/flights-pnr-service/v1/deleteCreditShell";
 
@@ -17,10 +23,26 @@ let deleteOption = {
   },
 };
 
-async function deletCS(fileName) {
+async function writeToCSvFile(records, filePath) {
+  try {
+    const csvWriter = createCsvWriter({
+      path: filePath,
+      header: [
+        { id: "pnr", title: "pnr" },
+        { id: "airlinecode", title: "airlinecode" },
+        { id: "status", title: "status" },
+        { id: "remark", title: "remark" },
+      ],
+    });
+    csvWriter.writeRecords(records);
+    console.log("successfully added to file");
+  } catch (error) {}
+}
+
+async function deletCS(fileName, outputFilePath) {
   const date = new Date();
   let resonMsg = "delete request on " + date.toLocaleDateString();
-  const delResponse = [];
+  const delResponses = [];
   const rows = await xlsxFile(fileName);
   console.log(rows);
   for (let i = 0; i < rows.length; i++) {
@@ -41,17 +63,40 @@ async function deletCS(fileName) {
           }),
         });
         const result = await response.json();
-        delResponse.push({ ...result, pnr, airline });
+        const rs = new DelResponse();
+        rs.pnr = pnr;
+        rs.airlinecode = airline;
+        rs.status = result.status;
+        rs.remark = JSON.stringify(result);
+        delResponses.push(rs);
       } catch (error) {
         console.log(row, error);
       }
     }
   }
-  return delResponse;
+
+  await writeToCSvFile(delResponses, outputFilePath);
+  return delResponses;
 }
 
 // ["FE1F2N", "SG"],
 
-const data = [["S4DV7V", "G8"]];
+// const data = [["S4DV7V", "G8"]];
+const dummuyData = ["2", 3, 5, 6, 6, 67];
 
-module.exports = { deletCS };
+function dummy() {
+  console.log("called");
+  return "";
+}
+
+// io.on("connect", (socket) => {
+//   console.log("Connected");
+
+//   dummuyData.forEach((dd) => {
+//     socket.emit("msgFromServer", {
+//       data: "hello from data" + "index --> " + dd,
+//     });
+//   });
+// });
+
+module.exports = { deletCS, dummy };
