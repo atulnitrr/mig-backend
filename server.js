@@ -104,6 +104,8 @@ expressApp.post("/download_del_file", (req, res, next) => {
     if (error) {
       console.log("some error while api file download");
       res.status(500).send({ error: error });
+    } else {
+      console.log("successfull download file " + filename);
     }
   });
 });

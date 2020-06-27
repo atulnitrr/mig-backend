@@ -55,7 +55,7 @@ async function deletCS(fileName, outputFilePath) {
         ? AIR_I5
         : requestAirline;
       try {
-        const response = await fetch(DEV_PATH, {
+        const response = await fetch(PROD_PATH, {
           ...deleteOption,
           body: JSON.stringify({
             airline: airline,
