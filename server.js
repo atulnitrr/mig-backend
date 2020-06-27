@@ -21,9 +21,8 @@ const expressServer = expressApp.listen("3031", () => {
 });
 let io = require("./socketinit").initialize(expressServer);
 const { getData } = require("./CheckCS");
-const { dummy, deletCS } = require("./deletecs");
-const e = require("express");
-
+const { deletCS } = require("./deletecs");
+const { getFileNameSuffix } = require("./dateTimeSuffix");
 // const io = socketio(expressServer);
 // const io = socketio(expressServer);
 
@@ -50,15 +49,25 @@ expressApp.get("/getcsdata/:pnr/:airlinecode", (req, res, data) => {
 // delete fiel uplodad
 expressApp.post("/upload_del_file", (req, res, next) => {
   if (!req.files || !Object.keys(req.files)) {
-    res.status(400).send({ data: "no file given " });
+    res.status(400).send({ data: "no file uploaded" });
   } else {
-    const uploadedFile = req.files.file;
+    let uploadedFile = req.files.file;
+    let filename = uploadedFile.name;
+    let extension = filename.split(".").pop();
+    filename = `${filename.substring(
+      0,
+      filename.lastIndexOf(".")
+    )}_${getFileNameSuffix()}.${extension}`;
+    console.log();
     const inputDir = __dirname + "/del_in_f";
-    uploadedFile.mv(`${inputDir}/${uploadedFile.name}`, (error) => {
+    uploadedFile.mv(`${inputDir}/${filename}`, (error) => {
       if (error) {
-        res.status(500).send(error);
+        console.log("error in delete file upload ");
+        console.log(error);
+        res.status(500).send({ error: error });
       } else {
-        res.status(200).send({ filename: uploadedFile.name });
+        console.log("success file upload");
+        res.status(200).send({ filename: filename });
       }
     });
   }
@@ -66,7 +75,6 @@ expressApp.post("/upload_del_file", (req, res, next) => {
 
 expressApp.post("/deletecs", (req, res, next) => {
   const filename = req.body.filename;
-  console.log(filename);
   const outputFile = `${filename.substring(
     0,
     filename.lastIndexOf(".")
@@ -75,9 +83,11 @@ expressApp.post("/deletecs", (req, res, next) => {
   const outputFilePath = `${__dirname}/del_out_f/${outputFile}`;
   deletCS(inputFilePath, outputFilePath)
     .then((data) => {
-      res.send({ status: "SUCCESS", filename: outputFile });
+      console.log("successfull delete call");
+      return res.send({ status: "SUCCESS", filename: outputFile });
     })
     .catch((error) => {
+      console.log("error in delete call");
       console.log(error);
       res.status(500).send({
         status: "FAILURE",
@@ -92,7 +102,7 @@ expressApp.post("/download_del_file", (req, res, next) => {
   const filePath = `${__dirname}/del_out_f/${filename}`;
   res.sendFile(filePath, (error) => {
     if (error) {
-      console.log("some error happened");
+      console.log("some error while api file download");
       res.status(500).send({ error: error });
     }
   });

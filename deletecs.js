@@ -4,8 +4,6 @@ const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 let io = require("./socketinit").io();
 const DelResponse = require("./DelResponse");
 
-// console.log(io);
-
 const PROD_PATH =
   "http://flights-pnr-service.ecs.mmt/flights-pnr-service/v1/deleteCreditShell";
 
@@ -36,7 +34,10 @@ async function writeToCSvFile(records, filePath) {
     });
     csvWriter.writeRecords(records);
     console.log("successfully added to file");
-  } catch (error) {}
+  } catch (error) {
+    console.error("error in writing to csv file");
+    console.log(error);
+  }
 }
 
 async function deletCS(fileName, outputFilePath) {
@@ -59,7 +60,7 @@ async function deletCS(fileName, outputFilePath) {
           body: JSON.stringify({
             airline: airline,
             csPnr: pnr,
-            reason: resonMsg + requestAirline,
+            reason: resonMsg + "-" + requestAirline,
           }),
         });
         const result = await response.json();
@@ -68,9 +69,12 @@ async function deletCS(fileName, outputFilePath) {
         rs.airlinecode = airline;
         rs.status = result.status;
         rs.remark = JSON.stringify(result);
+        console.log("deleted row --> " + JSON.stringify(rs));
         delResponses.push(rs);
       } catch (error) {
-        console.log(row, error);
+        console.error("error in delete for row " + row);
+        console.log(error);
+        throw error;
       }
     }
   }
@@ -79,24 +83,4 @@ async function deletCS(fileName, outputFilePath) {
   return delResponses;
 }
 
-// ["FE1F2N", "SG"],
-
-// const data = [["S4DV7V", "G8"]];
-const dummuyData = ["2", 3, 5, 6, 6, 67];
-
-function dummy() {
-  console.log("called");
-  return "";
-}
-
-// io.on("connect", (socket) => {
-//   console.log("Connected");
-
-//   dummuyData.forEach((dd) => {
-//     socket.emit("msgFromServer", {
-//       data: "hello from data" + "index --> " + dd,
-//     });
-//   });
-// });
-
-module.exports = { deletCS, dummy };
+module.exports = { deletCS };
