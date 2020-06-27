@@ -22,9 +22,9 @@ io.on("connect", (socket) => {
 });
 
 expressApp.get("/getcsdata/:pnr/:airlinecode", (req, res, data) => {
-  getData(req.params.pnr, req.params.airlinecode).then((data) =>
-    res.send(data)
-  );
+  getData(req.params.pnr, req.params.airlinecode)
+    .then((data) => res.send(data))
+    .catch((error) => res.status(500).send(error));
 });
 
 async function getData(pnr, airlinecode) {
