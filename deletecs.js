@@ -42,7 +42,7 @@ async function writeToCSvFile(records, filePath) {
 
 async function deletCS(fileName, outputFilePath) {
   const date = new Date();
-  let resonMsg = "delete request on " + date.toLocaleDateString();
+  let resonMsg = "delete request on " + date.toLocaleString();
   const delResponses = [];
   const rows = await xlsxFile(fileName);
   console.log(rows);
