@@ -1,6 +1,4 @@
 const fetch = require("node-fetch");
-const e = require("express");
-const { response } = require("express");
 
 const PROD_PATH =
   "http://flights-pnr-service.ecs.mmt/flights-pnr-service/v1/mongoCreditShellAmount";
@@ -11,7 +9,7 @@ const DEV_PATH =
 async function getData(pnr, airlinecode) {
   try {
     const response = await fetch(
-      `${DEV_PATH}?airline=${airlinecode}&pnr=${pnr}`
+      `${PROD_PATH}?airline=${airlinecode}&pnr=${pnr}`
     );
     try {
       const data = await response.json();
