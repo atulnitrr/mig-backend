@@ -1,3 +1,4 @@
+const now = require("performance-now");
 const Axios = require("axios");
 const fetch = require("node-fetch");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
@@ -51,11 +52,10 @@ expressApp.post("/upload_mig_file", (req, res, next) => {
 expressApp.post("/trigger_mig", (req, res, next) => {
   const filename = req.body.filename;
   const fullfilepath = `${MIG_DIR}/${filename}`;
-
+  // io.on("connect", (sokcet) => {
+  //   sokcet.emit("fromServer", sokcet.id);
+  // });
   migrate(fullfilepath);
-  setTimeout(() => {
-    res.send({ status: "Hello data " });
-  }, 10000);
 });
 
 async function migrate(filepath) {
@@ -63,6 +63,7 @@ async function migrate(filepath) {
     filepath.substring(0, filepath.lastIndexOf(".")) + "_output.csv";
   const csvData = [];
   sendMessage("---- starting migration ----");
+  let startTime = now();
   const rows = await xlsxFile(filepath);
   for (let i = 0; i < rows.length; i++) {
     if (i !== 0) {
@@ -74,7 +75,7 @@ async function migrate(filepath) {
 
       try {
         console.log("processing for booking id " + booking_id);
-        sendMessage("processing for booking id " + booking_id);
+        sendMessage(i + ". processing for booking id " + booking_id);
 
         const fetchDataResponse = await fetchData(booking_id);
         if (fetchDataResponse.isPresent) {
@@ -131,13 +132,17 @@ async function migrate(filepath) {
   }
 
   sendMessage(`processed total  ${rows.length - 1} booking_ids`);
-  sendMessage("writing result to csv file");
   sendMessage("credit shell row count " + creditShellData.length);
+  sendMessage("writing result to csv file");
   await writeToCSvFile([...csvData, ...creditShellData], outPutFilePath);
-  sendMessage("successfully written result to csv file");
+  sendMessage("successfully written result to csv file -> " + outPutFilePath);
   // clear credit shell
   creditShellData = [];
+  let endTime = now();
+  const totalTime = (endTime - startTime).toFixed(3);
+  console.log(totalTime);
   sendMessage("---- migration done ----");
+  sendMessage(`Total time taken ${totalTime} mili`);
 }
 
 async function migrateData(booking_id, source, fetchDataResponse) {
