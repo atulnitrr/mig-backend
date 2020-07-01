@@ -1,43 +1,8 @@
-const express = require("express");
-const socketio = require("socket.io");
 const fetch = require("node-fetch");
-const cors = require("cors");
-const fileUpload = require("express-fileupload");
-// this is for post boddy parsing
-const bodyParser = require("body-parser");
-
-//
-
-//
-
-const expressApp = express();
-expressApp.use(fileUpload());
-expressApp.use(cors());
-expressApp.use(bodyParser.json());
-expressApp.use(express.static(__dirname + "/public"));
-
-const expressServer = expressApp.listen("3031", () => {
-  console.log("Listening on port  3031");
-});
-let io = require("./socketinit").initialize(expressServer);
-const { getData } = require("./CheckCS");
-const { deletCS } = require("./deletecs");
-const { getFileNameSuffix } = require("./dateTimeSuffix");
-// const io = socketio(expressServer);
-// const io = socketio(expressServer);
-
-// io.on("connect", (socket) => {
-//   socket.on("msgToServer", (msg) => {
-//     io.emit("msgToClients", msg);
-//   });
-// });
-
-// io.on("connect", (socket) => {
-//   // console.log("data");
-//   setInterval(() => {
-//     // socket.emit("msgFromServer", { Data: "data" });
-//   }, 1500);
-// });
+const expressApp = require("../servers").expressApp;
+const { getData } = require("../CheckCS");
+const { deletCS } = require("../deletecs");
+const { getFileNameSuffix } = require("../dateTimeSuffix");
 
 expressApp.get("/getcsdata/:pnr/:airlinecode", (req, res, data) => {
   console.log(req.params);
@@ -110,4 +75,6 @@ expressApp.post("/download_del_file", (req, res, next) => {
   });
 });
 
-expressApp.post;
+module.exports = {
+  expressApp,
+};

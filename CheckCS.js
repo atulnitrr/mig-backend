@@ -9,7 +9,7 @@ const DEV_PATH =
 async function getData(pnr, airlinecode) {
   try {
     const response = await fetch(
-      `${PROD_PATH}?airline=${airlinecode}&pnr=${pnr}`
+      `${DEV_PATH}?airline=${airlinecode}&pnr=${pnr}`
     );
     try {
       const data = await response.json();

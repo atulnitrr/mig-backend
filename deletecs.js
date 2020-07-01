@@ -1,7 +1,6 @@
 const xlsxFile = require("read-excel-file/node");
 const fetch = require("node-fetch");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
-let io = require("./socketinit").io();
 const DelResponse = require("./DelResponse");
 
 const PROD_PATH =
