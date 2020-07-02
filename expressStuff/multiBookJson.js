@@ -52,10 +52,11 @@ expressApp.post("/upload_mig_file", (req, res, next) => {
 expressApp.post("/trigger_mig", (req, res, next) => {
   const filename = req.body.filename;
   const fullfilepath = `${MIG_DIR}/${filename}`;
-  // io.on("connect", (sokcet) => {
-  //   sokcet.emit("fromServer", sokcet.id);
-  // });
-  migrate(fullfilepath);
+  migrate(fullfilepath)
+    .then((data) => {
+      res.send({ filename: data });
+    })
+    .catch((error) => res.status(500).send({ error: error }));
 });
 
 async function migrate(filepath) {
@@ -143,6 +144,7 @@ async function migrate(filepath) {
   console.log(totalTime);
   sendMessage("---- migration done ----");
   sendMessage(`Total time taken ${totalTime} mili`);
+  return outPutFilePath;
 }
 
 async function migrateData(booking_id, source, fetchDataResponse) {
