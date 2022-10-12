@@ -18,7 +18,7 @@
     "express-fileupload": "^1.1.7-alpha.3",
     "node-fetch": "^2.6.0",
     "performance-now": "^2.1.0",
-    "read-excel-file": "^4.0.6",
+    "read-excel-file": "^5.5.1",
     "socket.io": "^2.3.0"
   }
 }
